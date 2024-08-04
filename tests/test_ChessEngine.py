@@ -32,10 +32,10 @@ class TestGameState(unittest.TestCase):
 
         self.assertEqual(True, True)
 
-class TestInCheck(unittest.TestCase):
     def test_notInCheck(self):
         game_state = chess.ChessEngine.GameState()
         valid_moves = game_state.getValidMoves()
+
         self.assertEqual(game_state.inCheck(), False)
 
     def test_inCheck(self):
@@ -51,6 +51,10 @@ class TestInCheck(unittest.TestCase):
         game_state.white_to_move = True
         valid_moves = game_state.getValidMoves()
         self.assertEqual(game_state.inCheck(), True)
+
+        game_state.white_to_move = False
+        valid_moves = game_state.getValidMoves()
+        self.assertEqual(game_state.inCheck(), False)
 
 
 if __name__ == '__main__':
