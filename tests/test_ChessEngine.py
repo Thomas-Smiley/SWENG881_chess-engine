@@ -12,7 +12,6 @@ class TestGameState(unittest.TestCase):
         game_state = chess.ChessEngine.GameState()
         valid_moves = game_state.getValidMoves()
         move = chess.ChessEngine.Move((6, 0), (4, 0), game_state.board)
-        print(move)
 
         for i in range(len(valid_moves)):
             if move == valid_moves[i]:
@@ -27,8 +26,7 @@ class TestGameState(unittest.TestCase):
                                             ['--', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
                                             ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']])
 
-        for i in game_state.board:
-            print(i)
+
 
         self.assertEqual(True, True)
 
@@ -50,11 +48,46 @@ class TestGameState(unittest.TestCase):
                             ['--', '--', '--', 'wK', '--', '--', '--', '--']]
         game_state.white_to_move = True
         valid_moves = game_state.getValidMoves()
-        self.assertEqual(game_state.inCheck(), True)
+        self.assertEqual(game_state.inCheck(), True)  # Uses above board to see if white king is in check
 
         game_state.white_to_move = False
         valid_moves = game_state.getValidMoves()
-        self.assertEqual(game_state.inCheck(), False)
+        self.assertEqual(game_state.inCheck(), False)  # Uses above board to see if black king is in check
+
+    def test_checkMate(self):
+        print("-- Testing Check Mate for White --")
+        game_state = chess.ChessEngine.GameState()
+        game_state.board = [['--', '--', '--', 'bQ', 'bK', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['bQ', '--', '--', '--', '--', '--', '--', '--'],
+                            ['bQ', '--', '--', 'wK', '--', '--', '--', '--']]
+        game_state.white_to_move = True
+        valid_moves = game_state.getValidMoves()
+        self.assertEqual(game_state.checkmate, True)  # Uses above board to see if white king is in check mate
+
+        game_state.white_to_move = False
+        valid_moves = game_state.getValidMoves()
+        self.assertEqual(game_state.checkmate, False)  # Uses above board to see if black king is in check mate
+
+        game_state = chess.ChessEngine.GameState()
+        game_state.board = [['wQ', '--', '--', '--', 'bK', '--', '--', '--'],
+                            ['wQ', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', 'bp', '--', '--', '--', '--'],
+                            ['wQ', '--', '--', '--', '--', '--', '--', '--'],
+                            ['wQ', '--', '--', 'wK', '--', '--', '--', '--']]
+        game_state.white_to_move = False
+        valid_moves = game_state.getValidMoves()
+        print("valid:")
+        print(valid_moves)
+        game_state.inCheck()
+        self.assertEqual(game_state.checkmate, True)  # Uses above board to see if black king is in check mate
 
 
 if __name__ == '__main__':
