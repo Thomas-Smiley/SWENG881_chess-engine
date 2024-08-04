@@ -26,6 +26,26 @@ class TestGameState(unittest.TestCase):
 
         self.assertEqual(True, True)
 
+class TestInCheck(unittest.TestCase):
+    def test_notInCheck(self):
+        game_state = chess.ChessEngine.GameState()
+        valid_moves = game_state.getValidMoves()
+        self.assertEqual(game_state.inCheck(), False)
+
+    def test_inCheck(self):
+        game_state = chess.ChessEngine.GameState()
+        game_state.board = [['--', '--', '--', 'bQ', 'bK', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                            ['--', '--', '--', 'wK', '--', '--', '--', '--']]
+        game_state.white_to_move = True
+        valid_moves = game_state.getValidMoves()
+        self.assertEqual(game_state.inCheck(), True)
+
 
 if __name__ == '__main__':
     unittest.main()
