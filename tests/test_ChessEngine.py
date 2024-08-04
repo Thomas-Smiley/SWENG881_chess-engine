@@ -11,15 +11,21 @@ class TestGameState(unittest.TestCase):
 
         game_state = chess.ChessEngine.GameState()
         valid_moves = game_state.getValidMoves()
-        move = chess.ChessEngine.Move((0, 0), (2, 6), game_state.board)
-        print('asdfasdfasdfasdf')
+        move = chess.ChessEngine.Move((6, 0), (4, 0), game_state.board)
         print(move)
 
         for i in range(len(valid_moves)):
             if move == valid_moves[i]:
-                print('yes')
+                game_state.makeMove(valid_moves[i])
 
-        game_state.makeMove(move)
+        self.assertEqual(game_state.board, [['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
+                                            ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
+                                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                                            ['wp', '--', '--', '--', '--', '--', '--', '--'],
+                                            ['--', '--', '--', '--', '--', '--', '--', '--'],
+                                            ['--', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
+                                            ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']])
 
         for i in game_state.board:
             print(i)
