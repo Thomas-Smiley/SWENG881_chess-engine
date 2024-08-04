@@ -3,10 +3,13 @@ Main driver file.
 Handling user input.
 Displaying current GameStatus object.
 """
-import pygame as p
-import ChessEngine, ChessAI
 import sys
 from multiprocessing import Process, Queue
+
+import pygame as p
+
+import chess.ChessAI
+import chess.ChessEngine
 
 BOARD_WIDTH = BOARD_HEIGHT = 512
 MOVE_LOG_PANEL_WIDTH = 250
@@ -24,7 +27,7 @@ def loadImages():
     """
     pieces = ['wp', 'wR', 'wN', 'wB', 'wK', 'wQ', 'bp', 'bR', 'bN', 'bB', 'bK', 'bQ']
     for piece in pieces:
-        IMAGES[piece] = p.transform.scale(p.image.load("images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES[piece] = p.transform.scale(p.image.load("chess/images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
 
 
 def main():
@@ -36,7 +39,7 @@ def main():
     screen = p.display.set_mode((BOARD_WIDTH + MOVE_LOG_PANEL_WIDTH, BOARD_HEIGHT))
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
-    game_state = ChessEngine.GameState()
+    game_state = chess.ChessEngine.GameState()
     valid_moves = game_state.getValidMoves()
     move_made = False  # flag variable for when a move is made
     animate = False  # flag variable for when we should animate a move
@@ -71,7 +74,7 @@ def main():
                         square_selected = (row, col)
                         player_clicks.append(square_selected)  # append for both 1st and 2nd click
                     if len(player_clicks) == 2 and human_turn:  # after 2nd click
-                        move = ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)
+                        move = chess.ChessEngine.Move(player_clicks[0], player_clicks[1], game_state.board)
                         for i in range(len(valid_moves)):
                             if move == valid_moves[i]:
                                 game_state.makeMove(valid_moves[i])
@@ -94,7 +97,7 @@ def main():
                         ai_thinking = False
                     move_undone = True
                 if e.key == p.K_r:  # reset the game when 'r' is pressed
-                    game_state = ChessEngine.GameState()
+                    game_state = chess.ChessEngine.GameState()
                     valid_moves = game_state.getValidMoves()
                     square_selected = ()
                     player_clicks = []
@@ -111,13 +114,13 @@ def main():
             if not ai_thinking:
                 ai_thinking = True
                 return_queue = Queue()  # used to pass data between threads
-                move_finder_process = Process(target=ChessAI.findBestMove, args=(game_state, valid_moves, return_queue))
+                move_finder_process = Process(target=chess.ChessAI.findBestMove, args=(game_state, valid_moves, return_queue))
                 move_finder_process.start()
 
             if not move_finder_process.is_alive():
                 ai_move = return_queue.get()
                 if ai_move is None:
-                    ai_move = ChessAI.findRandomMove(valid_moves)
+                    ai_move = chess.ChessAI.findRandomMove(valid_moves)
                 game_state.makeMove(ai_move)
                 move_made = True
                 animate = True
